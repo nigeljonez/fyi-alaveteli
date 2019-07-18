@@ -1,7 +1,14 @@
 FROM ruby:2.5-stretch
 
+ARG COMMIT=unknown
+ARG BRANCH=unknown
+LABEL gitcommit=COMMIT
+LABEL branch=BRANCH
+
 # Set noninteractive mode for apt-get
 ENV DEBIAN_FRONTEND noninteractive
+
+RUN echo $COMMIT; echo $BRANCH
 
 # Update
 RUN apt-get update && apt-get upgrade -y
@@ -31,6 +38,6 @@ COPY script/docker/general.yml config/general.yml.erb
 COPY script/docker/xapian.yml config/xapian.yml
 COPY script/docker/supervisor-*.conf /etc/supervisor/
 
-RUN mkdir -p cache
+RUN mkdir -p cache; echo $COMMIT > gitcommit.txt
 
 CMD ./script/docker/setup.sh
